@@ -1,0 +1,61 @@
+import {useState, useEffect, useCallback} from 'react'
+import aws from 'aws-sdk'
+const _ = require('lodash')
+
+export const useFetch = (url, options) => {
+    const [response, setResponse] = useState(null);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true)
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const res = await fetch(url, options);
+          setLoading(true)
+          const json = await res.json();
+        //   setResponse(json);
+          let chunks = _.chunk(json, 30)
+          setResponse(chunks)
+          setLoading(false)
+        } catch (error) {
+          setError(error);
+        }
+      };
+      fetchData();
+    }, []);
+    return { response, error, loading };
+  };
+
+  export const useScrollTop = () => {  
+    const [scrollTop, setScrollTop] = useState(0)
+    
+    useEffect(() => {
+        const onScroll = e => {
+          setScrollTop(e.target.documentElement.scrollTop);
+        };
+        window.addEventListener("scroll", onScroll);
+    
+        return () => window.removeEventListener("scroll", onScroll);
+      }, [scrollTop]);
+    return scrollTop
+}
+
+const cleanFilename = filename => {
+  return filename
+  .replace(/['|“|”|‘|’]/gim, "'")
+  .replace(/'/gim, "")
+  .replace(/"/gim, "")
+  .replace(/[…]/gim, "...")
+  .replace('...', "")
+  .replace(/–/gim, "-") //utf8 dash
+  .replace(/[.]/gim, "_")
+  .replace(/\+/gim, "_")
+  .replace(/ /gim, "_")
+  .replace(/\?/gim, "")
+  .replace(/&/gim, 'and')
+  .replace(/\*/gim, "")
+  .replace(/:/gim, "")
+  .replace(/\(\)/gim, "")
+  .replace(/-/gim, "")
+   .replace(/__/g, '_')
+    // need to replace all white spaces, slashes, special chars and do an entire reupload
+};
