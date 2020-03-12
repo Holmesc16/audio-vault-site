@@ -8,6 +8,16 @@ export const StyledWrapper = styled.div`
     width:100%;
     margin-bottom: 75px;
 
+  .ui.label.audio.tag:hover {
+    background: #cb1616;
+    color: white;
+    /* transition: color; */
+    animation: ease-in;
+    transition-delay: 500ms;
+    transition-timing-function: ease-in;
+    box-shadow: 2px 2px 12px #999;
+    }
+
   .row {
     display: flex;
     flex-direction: row;
