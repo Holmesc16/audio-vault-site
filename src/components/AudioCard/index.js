@@ -4,10 +4,10 @@ import { Button, Icon, Item, Label, Loader } from 'semantic-ui-react'
 import { useScrollTop } from '../../utils'
 import FileCard from '../FileCard'
 import {  Link } from 'react-router-dom'
+import { cleanTitleName, readableName } from '../../utils'
 
 const cleanTagName = tag => tag.replace('https: www.theunticket.com ', '').replace('tag', '').trim()
-
- const AudioCard = React.memo(function AudioCard(props) {
+const AudioCard = React.memo(function AudioCard(props) {
     
     let currentChunk = props.audio[props.index]
     console.log(currentChunk)
@@ -21,14 +21,14 @@ const cleanTagName = tag => tag.replace('https: www.theunticket.com ', '').repla
                         return (
                         <Item key={index}>
                             <Item.Content>
-                                <Item.Header className="audio header">{item.title.replace(/_/g, ' ')}</Item.Header>
+                                <Item.Header className="audio header">{readableName(item.title)}</Item.Header>
                                 <Item.Meta className="audio date">{item.date}</Item.Meta>
                                 <Item.Extra className="audio tags-container">
                                 {item.tags
                                 .split(',')
                                 .map(tag => tag.length ? <Label key={tag} className="audio tag">{cleanTagName(tag)}</Label> : '')}
                                 </Item.Extra>
-                                    <Link to={`/file/${item.title}`}>
+                                    <Link to={{pathname:`/file/${item.title}`, state: { title: item.title, tags: item.tags, date: item.date } }}>
                                         <Button floated='right' className="">
                                             Listen&nbsp;
                                             <Icon name='play right small'/>

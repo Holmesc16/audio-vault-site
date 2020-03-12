@@ -59,3 +59,23 @@ const cleanFilename = filename => {
    .replace(/__/g, '_')
     // need to replace all white spaces, slashes, special chars and do an entire reupload
 };
+
+export const cleanTitleName = title => title.replace(/_/gi, ' ')
+
+export const cleanDate = date => date.replace(/^(\d\d)(\d)$/g,'$1/$2').replace(/^(\d\d\/\d\d)(\d+)$/g,'$1/$2').replace(/[^\d\/]/g,'/')
+
+export const readableName = name => {
+  // name = cleanTitleName(name)
+  // let substr = name.substr(-7)
+  // name = name.replace(substr, '')
+  // name += cleanDate(substr)
+  let s = name.substr(-6)
+  name = name.replace(s, '')
+  name = cleanTitleName(name)
+  if(typeof(name.substr(-1) === 'number')) {
+    name = name.replace(name.substr(-1), '')
+    return name
+  } 
+  return name
+}
+export default {cleanTitleName, cleanDate, readableName}

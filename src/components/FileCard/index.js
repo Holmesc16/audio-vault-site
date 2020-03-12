@@ -1,23 +1,15 @@
 import React from 'react'
-import {StyledContainer} from './styles'
-import { TransitionGroup, CSSTransition } from "react-transition-group";
+import {StyledWrapper} from '../../views/Home/styles'
+import cleanTitleName from '../../utils'
 
 const FileCard = props => {
-    const { isOpen, onClose, file } = props;
+ const {date, title, tags } =props.location.state
 
-    return (
-        <TransitionGroup component={null}>
-        {isOpen && (
-          <CSSTransition classNames="file" timeout={300}>
-            <StyledContainer>
-                <div>
-                    <h1>Hello!</h1>
-                </div>
-            </StyledContainer>
-          </CSSTransition>
-        )}
-      </TransitionGroup>
-    )
+ return (
+     <StyledWrapper>
+       <h1>{title}</h1>
+     </StyledWrapper>
+   )
 }
 
 export default FileCard

@@ -12,10 +12,8 @@ function App() {
 
   return (
     <div className="App">
-        <GlobalStyle/>
-          <Header width="200" />
+          <GlobalStyle/>
           <Home audio={response} loading={loading}/>
-          <Footer/>
     </div>
   );
 }
