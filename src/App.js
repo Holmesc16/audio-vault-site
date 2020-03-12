@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import Routes from './Routes'
 import { GlobalStyle } from './ui/AppStyles'
 import Home from './views/Home';
 import Header from './components/Header'
@@ -12,12 +12,10 @@ function App() {
 
   return (
     <div className="App">
-      <Router>
         <GlobalStyle/>
           <Header width="200" />
           <Home audio={response} loading={loading}/>
           <Footer/>
-      </Router>
     </div>
   );
 }

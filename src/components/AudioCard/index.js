@@ -3,7 +3,7 @@ import StyledCard from './styles'
 import { Button, Icon, Item, Label, Loader } from 'semantic-ui-react'
 import { useScrollTop } from '../../utils'
 import FileCard from '../FileCard'
-import { Link, Switch } from 'react-router-dom'
+import {  Link } from 'react-router-dom'
 
 const cleanTagName = tag => tag.replace('https: www.theunticket.com ', '').replace('tag', '').trim()
 
@@ -28,12 +28,12 @@ const cleanTagName = tag => tag.replace('https: www.theunticket.com ', '').repla
                                 .split(',')
                                 .map(tag => tag.length ? <Label key={tag} className="audio tag">{cleanTagName(tag)}</Label> : '')}
                                 </Item.Extra>
-                                <Link to={`/file/${item.title}`}>
-                                    <Button floated='right' className="">
-                                        Listen&nbsp;
-                                        <Icon name='play right small'/>
-                                    </Button>
-                                </Link>
+                                    <Link to={`/file/${item.title}`}>
+                                        <Button floated='right' className="">
+                                            Listen&nbsp;
+                                            <Icon name='play right small'/>
+                                        </Button>
+                                    </Link>
                             </Item.Content>
                         </Item>
                         )

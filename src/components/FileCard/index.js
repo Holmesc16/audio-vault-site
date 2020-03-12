@@ -11,7 +11,7 @@ const FileCard = props => {
           <CSSTransition classNames="file" timeout={300}>
             <StyledContainer>
                 <div>
-                    <h1>{props.file}</h1>
+                    <h1>Hello!</h1>
                 </div>
             </StyledContainer>
           </CSSTransition>
