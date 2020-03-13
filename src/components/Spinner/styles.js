@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 export const StyledContainer = styled.div`
 .lds-ripple {
-    display: inline-block;
+    display: block;
     position: relative;
     width: 80px;
     height: 80px;
