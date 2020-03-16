@@ -1,9 +1,6 @@
 import React from 'react';
-import Routes from './Routes'
 import { GlobalStyle } from './ui/AppStyles'
 import Home from './views/Home';
-import Header from './components/Header'
-import Footer from './components/Footer'
 import { useFetch } from './utils'
 
 function App() {

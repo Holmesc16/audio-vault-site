@@ -1,14 +1,75 @@
-import React from 'react'
-import {StyledWrapper} from '../../views/Home/styles'
+import React, { useState, useEffect } from 'react'
+import { StyledWrapper } from '../../views/Home/styles'
+import { StyledAudioPlayer } from './styles'
 import { Button, Icon, Item, Label, Loader } from 'semantic-ui-react'
 // import {cleanTitleName, readableName} from '../../utils'
 import { useFetch } from '../../utils'
 import Spinner from '../../components/Spinner'
 
 const FileCard = props => {
+ 
+ const [src, setSrc] = useState(null)
+ const [isPlaying, setIsPlaying] = useState(false)
+
  const { date, title, tags } =props.location.state
  const { response, loading } = useFetch(`http://localhost:5000/file/${title}`)
  
+ const media = React.createRef()
+ const percentage = React.createRef();
+ const seekObj = React.createRef();
+ const currentTime = React.createRef();
+
+
+
+ const togglePlay = () => {
+  let audioIsPlaying = media.current.currentTime > 0 && !media.current.paused && media.current.readyState > 2;
+
+  if (!audioIsPlaying) {
+    media.current.play();
+  } else {
+    media.current.pause();
+  }
+
+  setIsPlaying(!isPlaying)
+};
+
+const calculatePercentPlayed = () => {
+  let percentPlayed = (media.current.currentTime / media.current.duration).toFixed(2) * 100;
+  percentage.current.style.width = `${percentPlayed}%`;
+}
+
+const calculateCurrentValue = (currentTime) => {
+  const currentMinute = parseInt(currentTime / 60) % 60;
+  const currentSecondsLong = currentTime % 60;
+  const currentSeconds = currentSecondsLong.toFixed();
+  const currentTimeFormatted = `${currentMinute < 10 ? `0${currentMinute}` : currentMinute}:${
+  currentSeconds < 10 ? `0${currentSeconds}` : currentSeconds
+  }`;
+
+  return currentTimeFormatted;
+}
+
+const initProgressBar = () => {
+  const media = media.current;
+  const currentTime = calculateCurrentValue(media.currentTime);
+
+  function seek(e) {
+    const percent = e.offsetX / 1400;
+    media.currentTime = percent * media.duration;
+  }
+
+  currentTime.current.innerHTML = currentTime;
+  seekObj.current.addEventListener('click', seek);
+  calculatePercentPlayed();
+}
+
+const onEnded = () => {
+  percentage.current.style.width = 0;
+  currentTime.current.innerHTML = '00:00';
+
+  setIsPlaying(false)
+}
+
  return (
     
      <StyledWrapper>
@@ -16,7 +77,25 @@ const FileCard = props => {
         <Item>
           <Item.Content>
               <h1>{response.title}</h1>
-              {/* put media player here */}
+              <StyledAudioPlayer className="player-wrapper">
+                <div className="audio-player">
+                  <audio ref={media} onTimeUpdate={initProgressBar} onEnded={onEnded} id="audio">
+                    <source src={src} type="audio/mp3" />
+                  </audio>
+                  <div className="player-controls">
+                    <div id="radioIcon"></div>
+                    <button onClick={togglePlay} className={isPlaying === false ? 'play' : 'pause'} id="playAudio"></button>
+                    <div id="seekObjContainer">
+                      <div ref={seekObj} id="seekObj">
+                        <div id="percentage" ref={percentage}></div>
+                      </div>
+                    </div>
+
+                    <p><small id="currentTime" ref={currentTime}>00:00</small></p>
+
+                  </div>
+                </div>
+              </StyledAudioPlayer>
               <h2>{response.date}</h2>
               <Item.Extra className="audio tags-container">
               {response.tags
