@@ -14,12 +14,12 @@ const FileCard = props => {
  const { date, title, tags } =props.location.state
  const { response, loading } = useFetch(`http://localhost:5000/file/${title}`)
  
+ response.audio ? setSrc(response.audio) : setSrc(null)
+ 
  const media = React.createRef()
  const percentage = React.createRef();
  const seekObj = React.createRef();
  const currentTime = React.createRef();
-
-
 
  const togglePlay = () => {
   let audioIsPlaying = media.current.currentTime > 0 && !media.current.paused && media.current.readyState > 2;
