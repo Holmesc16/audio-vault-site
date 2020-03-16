@@ -11,10 +11,9 @@ export const StyledWrapper = styled.div`
   .ui.label.audio.tag:hover {
     background: #cb1616;
     color: white;
-    /* transition: color; */
-    animation: ease-in;
-    transition-delay: 500ms;
-    transition-timing-function: ease-in;
+    cursor:pointer;
+    transition:background .2s ease-in-out;
+    // transition:color .1s ease-in-out;
     box-shadow: 2px 2px 12px #999;
     }
 

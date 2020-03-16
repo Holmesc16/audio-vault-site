@@ -12,9 +12,13 @@ export const useFetch = (url, options) => {
           const res = await fetch(url, options);
           setLoading(true)
           const json = await res.json();
-        //   setResponse(json);
+          
+          if(url.includes('file')) {
+            setResponse(json)
+        } else {
           let chunks = _.chunk(json, 30)
           setResponse(chunks)
+        }
           setLoading(false)
         } catch (error) {
           setError(error);
@@ -78,4 +82,17 @@ export const readableName = name => {
   } 
   return name
 }
-export default {cleanTitleName, cleanDate, readableName}
+export const removeSuperfluousDate = title => {
+  let removeNumbersAndSpaces = title => title = title.replace(title.substr(-1), '')
+
+  let s = title.substr(-8)
+  title = title.replace(s, '')
+  
+  if(typeof(title.substr(-1) === 'number')) {
+      removeNumbersAndSpaces(title)
+      return title
+  }
+  return title.trim() 
+}
+
+export default {cleanTitleName, cleanDate, readableName, removeSuperfluousDate}

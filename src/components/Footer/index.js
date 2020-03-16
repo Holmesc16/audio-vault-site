@@ -10,6 +10,7 @@ var style = {
     bottom: "0",
     height: "60px",
     width: "100%",
+    zIndex: "1"
 }
 
 var phantom = {

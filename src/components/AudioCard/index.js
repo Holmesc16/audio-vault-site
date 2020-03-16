@@ -1,15 +1,13 @@
 import React from 'react'
 import StyledCard from './styles'
 import { Button, Icon, Item, Label, Loader } from 'semantic-ui-react'
-import { useScrollTop } from '../../utils'
-import FileCard from '../FileCard'
 import {  Link } from 'react-router-dom'
-import { cleanTitleName, readableName } from '../../utils'
+import { useScrollTop, cleanTitleName, readableName, removeSuperfluousDate } from '../../utils'
 
 const cleanTagName = tag => tag.replace('https: www.theunticket.com ', '').replace('tag', '').trim()
 const AudioCard = React.memo(function AudioCard(props) {
     
-    let currentChunk = props.audio[props.index]
+    let currentChunk = props.audio[props.index + 5]
     console.log(currentChunk)
    return (
         <StyledCard>
@@ -21,7 +19,7 @@ const AudioCard = React.memo(function AudioCard(props) {
                         return (
                         <Item key={index}>
                             <Item.Content>
-                                <Item.Header className="audio header">{readableName(item.title)}</Item.Header>
+                                <Item.Header className="audio header">{removeSuperfluousDate(cleanTitleName(item.title))}</Item.Header>
                                 <Item.Meta className="audio date">{item.date}</Item.Meta>
                                 <Item.Extra className="audio tags-container">
                                 {item.tags
