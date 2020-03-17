@@ -69,10 +69,6 @@ export const cleanTitleName = title => title.replace(/_/gi, ' ')
 export const cleanDate = date => date.replace(/^(\d\d)(\d)$/g,'$1/$2').replace(/^(\d\d\/\d\d)(\d+)$/g,'$1/$2').replace(/[^\d\/]/g,'/')
 
 export const readableName = name => {
-  // name = cleanTitleName(name)
-  // let substr = name.substr(-7)
-  // name = name.replace(substr, '')
-  // name += cleanDate(substr)
   let s = name.substr(-6)
   name = name.replace(s, '')
   name = cleanTitleName(name)
@@ -95,4 +91,18 @@ export const removeSuperfluousDate = title => {
   return title.trim() 
 }
 
+export const useDetermineContext = () => {
+  let [context, setContext] = useState(null)
+  
+  if (!window.AudioContext) {
+      if (!window.webkitAudioContext) {
+          alert("Your browser does not support any AudioContext and cannot play back this audio.");
+          return;
+      }
+          window.AudioContext = window.webkitAudioContext;
+      }
+      let c = new AudioContext();
+      setContext(c)
+      return context
+  }
 export default {cleanTitleName, cleanDate, readableName, removeSuperfluousDate}

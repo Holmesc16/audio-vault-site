@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { StyledWrapper } from '../../views/Home/styles'
 import { StyledAudioPlayer } from './styles'
-import { Button, Icon, Item, Label, Loader } from 'semantic-ui-react'
-// import {cleanTitleName, readableName} from '../../utils'
+import { Item, Label } from 'semantic-ui-react'
 import { useFetch } from '../../utils'
 import Spinner from '../../components/Spinner'
 
@@ -11,26 +10,34 @@ const FileCard = props => {
  const [src, setSrc] = useState(null)
  const [isPlaying, setIsPlaying] = useState(false)
 
- const { date, title, tags } =props.location.state
- const { response, loading } = useFetch(`http://localhost:5000/file/${title}`)
+ const { title, date, tags } =props.location.state
+ let { response, loading } = useFetch(`http://localhost:5000/file/${title}`)
  
- response.audio ? setSrc(response.audio) : setSrc(null)
- 
+  useEffect(() => {
+    if(response !== null && response !== 'undefined') {
+      setSrc(response.audio)
+    }
+    return function cleanup() {
+      console.log('src', response)
+      console.log(props.location.state)
+    }
+  })
+
  const media = React.createRef()
  const percentage = React.createRef();
  const seekObj = React.createRef();
  const currentTime = React.createRef();
 
  const togglePlay = () => {
-  let audioIsPlaying = media.current.currentTime > 0 && !media.current.paused && media.current.readyState > 2;
+    let audioIsPlaying = media.current.currentTime > 0 && !media.current.paused && media.current.readyState > 2;
 
-  if (!audioIsPlaying) {
-    media.current.play();
-  } else {
-    media.current.pause();
-  }
+    if (!audioIsPlaying) {
+      media.current.play();
+    } else {
+      media.current.pause();
+    }
 
-  setIsPlaying(!isPlaying)
+    setIsPlaying(!isPlaying)
 };
 
 const calculatePercentPlayed = () => {
@@ -50,7 +57,6 @@ const calculateCurrentValue = (currentTime) => {
 }
 
 const initProgressBar = () => {
-  const media = media.current;
   const currentTime = calculateCurrentValue(media.currentTime);
 
   function seek(e) {
@@ -76,7 +82,7 @@ const onEnded = () => {
       { loading ? <Spinner/> :
         <Item>
           <Item.Content>
-              <h1>{response.title}</h1>
+              <h1>{title}</h1>
               <StyledAudioPlayer className="player-wrapper">
                 <div className="audio-player">
                   <audio ref={media} onTimeUpdate={initProgressBar} onEnded={onEnded} id="audio">
@@ -96,9 +102,9 @@ const onEnded = () => {
                   </div>
                 </div>
               </StyledAudioPlayer>
-              <h2>{response.date}</h2>
+              <h2>{date}</h2>
               <Item.Extra className="audio tags-container">
-              {response.tags
+              {tags
               .split(',')
               .map(tag => tag.length ? <Label key={tag} className="audio tag">{tag}</Label> : '')}
               </Item.Extra>
