@@ -15,10 +15,10 @@ const FileCard = props => {
  
   useEffect(() => {
     if(response !== null && response !== 'undefined') {
-      setSrc(response.audio)
+      setSrc(response.url)
     }
     return function cleanup() {
-      console.log('src', response)
+      console.log('src', src)
       console.log(props.location.state)
     }
   })
