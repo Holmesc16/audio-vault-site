@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyledWrapper } from '../../views/Home/styles'
 import { StyledAudioPlayer } from './styles'
 import { Item, Label } from 'semantic-ui-react'
-import { useFetch } from '../../utils'
+import { useFetch, cleanTitleName, removeSuperfluousDate } from '../../utils'
 import Spinner from '../../components/Spinner'
 
 const FileCard = props => {
@@ -14,12 +14,10 @@ const FileCard = props => {
  let { response, loading } = useFetch(`http://localhost:5000/file/${title}`)
  
   useEffect(() => {
-    if(response !== null && response !== 'undefined') {
-      setSrc(response.url)
-    }
-    return function cleanup() {
-      console.log('src', src)
-      console.log(props.location.state)
+       return function cleanup() {
+        if(response !== null && response !== 'undefined') {
+          setSrc(response.url)
+        }
     }
   })
 
@@ -45,7 +43,7 @@ const calculatePercentPlayed = () => {
   percentage.current.style.width = `${percentPlayed}%`;
 }
 
-const calculateCurrentValue = (currentTime) => {
+const calculateCurrentValue = currentTime => {
   const currentMinute = parseInt(currentTime / 60) % 60;
   const currentSecondsLong = currentTime % 60;
   const currentSeconds = currentSecondsLong.toFixed();
@@ -57,14 +55,15 @@ const calculateCurrentValue = (currentTime) => {
 }
 
 const initProgressBar = () => {
-  const currentTime = calculateCurrentValue(media.currentTime);
+  const currentTimeValue = calculateCurrentValue(media.current.currentTime);
 
   function seek(e) {
-    const percent = e.offsetX / 1400;
-    media.currentTime = percent * media.duration;
+    console.log(seekObj.current)
+    const percent = e.offsetX / seekObj.current.offsetWidth;
+    media.current.currentTime = percent * media.current.duration;
   }
-
-  currentTime.current.innerHTML = currentTime;
+  //media.current.innerText = currentTimeValue
+  currentTime.current.innerHTML= currentTimeValue
   seekObj.current.addEventListener('click', seek);
   calculatePercentPlayed();
 }
@@ -82,7 +81,7 @@ const onEnded = () => {
       { loading ? <Spinner/> :
         <Item>
           <Item.Content>
-              <h1>{title}</h1>
+              <h1>{removeSuperfluousDate(cleanTitleName(title))}</h1>
               <StyledAudioPlayer className="player-wrapper">
                 <div className="audio-player">
                   <audio ref={media} onTimeUpdate={initProgressBar} onEnded={onEnded} id="audio">
