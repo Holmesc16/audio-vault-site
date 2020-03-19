@@ -1,12 +1,16 @@
 import styled from 'styled-components'
 
 export const StyledWrapper = styled.div`
-    min-height: 100%;
+  h1, h2, h3, h4, h5 {
+    font-family: 'Avenir Next', Helvetica, Segoe UI, Arial, Sans-serif;
+  }
+  min-height: 100%;
     position: absolute;
     top: 349px;
     padding: 30px 50px;
     width:100%;
     margin-bottom: 75px;
+    font-family: 'Avenir Next', Helvetica, Segoe UI, Arial, Sans-serif;
 
   .ui.label.audio.tag:hover {
     background: #cb1616;

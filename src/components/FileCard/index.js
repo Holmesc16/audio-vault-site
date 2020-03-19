@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { StyledWrapper } from '../../views/Home/styles'
 import { StyledAudioPlayer } from './styles'
 import { Item, Label } from 'semantic-ui-react'
-import { useFetch, cleanTitleName, removeSuperfluousDate } from '../../utils'
+import { useFetch,  useScrollTop, cleanTitleName, removeSuperfluousDate } from '../../utils'
 import Spinner from '../../components/Spinner'
 
 const FileCard = props => {
  
  const [src, setSrc] = useState(null)
  const [isPlaying, setIsPlaying] = useState(false)
-
+ const { scrollTop } = useScrollTop()
  const { title, date, tags } =props.location.state
  let { response, loading } = useFetch(`http://localhost:5000/file/${title}`)
  
@@ -17,6 +17,7 @@ const FileCard = props => {
        return function cleanup() {
         if(response !== null && response !== 'undefined') {
           setSrc(response.url)
+          scrollTop = 0
         }
     }
   })

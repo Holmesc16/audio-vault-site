@@ -7,7 +7,7 @@ flex-direction: row;
 
 export const StyledAudioPlayer = styled.div`
 display:inline-block;
-
+font-family: 'Avenir Next', Helvetica
 .audio-player {
     width: 470px;
     padding: 35px 20px;
@@ -68,7 +68,8 @@ display:inline-block;
           left: 0;
           top: 0;
           height: 100%;
-          background-color: coral;
+          background-color: #ffcc22;
+          border-right: 1px solid #000;
         }
       }
     }
