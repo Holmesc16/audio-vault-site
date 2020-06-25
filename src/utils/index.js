@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback} from 'react'
+import {useState, useEffect, useCallback, useRef} from 'react'
 import aws from 'aws-sdk'
 const _ = require('lodash')
 
@@ -29,6 +29,31 @@ export const useFetch = (url, options) => {
     return { response, error, loading };
   };
 
+  export const useIntersect = ({ root = null, rootMargin, threshold = 0}) => {
+    const [entry, updateEntry] = useState({})
+    const [node, setNode] = useState(null)
+
+    const observer = useRef(null)
+
+    useEffect(() => {
+      if(observer.current) observer.current.disconnect()
+
+      observer.current = new window.IntersectionObserver(
+        ([entry]) => updateEntry(entry), 
+        {
+          root,
+          rootMargin,
+          threshold
+        }
+      )
+
+      const { current: currentObserver } = observer
+      if(node) currentObserver.observe(node)
+      return () => currentObserver.disconnect()
+    }, [node, root, rootMargin, threshold])
+    return [setNode, entry]
+  }
+  
   export const useScrollTop = () => {  
     const [scrollTop, setScrollTop] = useState(0)
     

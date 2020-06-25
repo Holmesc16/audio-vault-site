@@ -9,7 +9,6 @@ const FileCard = props => {
  
  const [src, setSrc] = useState(null)
  const [isPlaying, setIsPlaying] = useState(false)
- const { scrollTop } = useScrollTop()
  const { title, date, tags } =props.location.state
  let { response, loading } = useFetch(`http://localhost:5000/file/${title}`)
  
@@ -17,7 +16,7 @@ const FileCard = props => {
        return function cleanup() {
         if(response !== null && response !== 'undefined') {
           setSrc(response.url)
-          scrollTop = 0
+          window.scrollTo(0,126)
         }
     }
   })
@@ -82,7 +81,7 @@ const onEnded = () => {
       { loading ? <Spinner/> :
         <Item>
           <Item.Content>
-              <h1>{removeSuperfluousDate(cleanTitleName(title))}</h1>
+              <h1>{cleanTitleName(title).replace(/\d/g, "")}</h1>
               <StyledAudioPlayer className="player-wrapper">
                 <div className="audio-player">
                   <audio ref={media} onTimeUpdate={initProgressBar} onEnded={onEnded} id="audio">

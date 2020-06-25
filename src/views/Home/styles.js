@@ -20,7 +20,16 @@ export const StyledWrapper = styled.div`
     // transition:color .1s ease-in-out;
     box-shadow: 2px 2px 12px #999;
     }
-
+    .ui.label.feature-tag.tag {
+      background: #cb1616;
+      color: white;
+      height: 50px;
+      width: 215px;
+      padding-top: 17px;
+      font-size: 17px;
+      margin-bottom: 35px;
+      transform: rotate(-5deg);
+  }
   .row {
     display: flex;
     flex-direction: row;

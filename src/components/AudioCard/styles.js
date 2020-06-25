@@ -22,7 +22,6 @@ width:100%;
     background:#0435cd;
     transition:background .2s ease-in-out;
 }
-
 `
 
 export default StyledCard

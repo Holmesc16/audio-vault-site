@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { StyledWrapper } from "./styles";
 import Spinner from '../../components/Spinner'
-import { useScrollTop } from '../../utils'
-import {debounce} from 'lodash'
+// import { useScrollTop } from '../../utils'
+// import {debounce} from 'lodash'
 import AudioCard from '../../components/AudioCard'
+import { AuthContext } from '../../App'
 
 const Home = React.memo(function Home(props) {
-  const currentIndex = 0
- 
+  const { dispatch } = useContext(AuthContext)
+  console.log(dispatch)
+  
+  let currentIndex = 0
+  console.log()
   return (
       <div className="container">
-          <StyledWrapper>
+          <StyledWrapper className="audio-wrapper">
             {props.loading ? <Spinner/> : 
               <div>
                 <AudioCard audio={props.audio} index={currentIndex}/>
