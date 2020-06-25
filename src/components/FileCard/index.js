@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyledWrapper } from '../../views/Home/styles'
 import { StyledAudioPlayer } from './styles'
 import { Item, Label } from 'semantic-ui-react'
-import { useFetch,  useScrollTop, cleanTitleName, removeSuperfluousDate } from '../../utils'
+import { useFetch, cleanTitleName } from '../../utils'
 import Spinner from '../../components/Spinner'
 
 const FileCard = props => {
@@ -16,7 +16,7 @@ const FileCard = props => {
        return function cleanup() {
         if(response !== null && response !== 'undefined') {
           setSrc(response.url)
-          window.scrollTo(0,126)
+          window.location.pathname !== '/' ? window.scrollTo(0,126) : window.scrollTo(0,0)
         }
     }
   })
