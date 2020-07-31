@@ -1,7 +1,11 @@
 import styled from 'styled-components'
 
 export const StyledLogin =  styled.div`
-.login-container{
+h1 {
+  font-family: 'Avenir Next' !important;
+}
+.login-container, .signup-container {
+  font-family: 'Avenir Next' !important;
   display: flex;
   align-items: center;
   background-image: url("./assets/carry-on-colour.svg");
@@ -19,6 +23,7 @@ export const StyledLogin =  styled.div`
   transition: 0.3s;
   height: 70%;
   width: 45%;
+  margin: 0 25px;
 }
 /* On mouse-over, add a deeper shadow */
 .card:hover {
@@ -29,6 +34,7 @@ export const StyledLogin =  styled.div`
   padding-left: 7%;
   padding-right: 7%;
   height: 100%;
+
 }
 .login-container .container h1{
   font-size: 2.5rem;

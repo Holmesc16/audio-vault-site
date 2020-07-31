@@ -35,14 +35,14 @@ const Tags = props => {
                         return (
                         <Item key={index}>
                             <Item.Content>
-                                <Item.Header className="audio header">{cleanTitleName(item.title).replace(/\d/g, "")}</Item.Header>
-                                <Item.Meta className="audio date">{item.date}</Item.Meta>
+                                <Item.Header className="audio header">{item.audio_title}</Item.Header>
+                                <Item.Meta className="audio date">{item.audio_date}</Item.Meta>
                                 <Item.Extra className="audio tags-container">
-                                {item.tags
+                                {item.audio_tags
                                 .split(',')
                                 .map(tag => tag.length ? <Label key={tag} className="audio tag" onClick={e => handleTagClick(e)}>{cleanTagName(tag)}</Label> : '')}
                                 </Item.Extra>
-                                    <Link to={{pathname:`/file/${item.title}`, state: { title: item.title, tags: item.tags, date: item.date } }}>
+                                    <Link to={{pathname:`/file/${item.s3_key}`, state: { title: item.audio_title, tags: item.audio_tags, date: item.audio_date, key:item.s3_key } }}>
                                         <Button floated='right' className="">
                                             Listen&nbsp;
                                             <Icon name='play right small'/>

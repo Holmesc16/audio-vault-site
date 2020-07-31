@@ -9,8 +9,9 @@ const FileCard = props => {
  
  const [src, setSrc] = useState(null)
  const [isPlaying, setIsPlaying] = useState(false)
- const { title, date, tags } =props.location.state
- let { response, loading } = useFetch(`http://localhost:5000/file/${title}`)
+ const { title, date, tags, key } =props.location.state
+ console.log()
+ let { response, loading } = useFetch(`http://localhost:5000/file/${key}`)
  
   useEffect(() => {
        return function cleanup() {
@@ -58,7 +59,6 @@ const initProgressBar = () => {
   const currentTimeValue = calculateCurrentValue(media.current.currentTime);
 
   function seek(e) {
-    console.log(seekObj.current)
     const percent = e.offsetX / seekObj.current.offsetWidth;
     media.current.currentTime = percent * media.current.duration;
   }
@@ -81,7 +81,7 @@ const onEnded = () => {
       { loading ? <Spinner/> :
         <Item>
           <Item.Content>
-              <h1>{cleanTitleName(title).replace(/\d/g, "")}</h1>
+              <h1>{title}</h1>
               <StyledAudioPlayer className="player-wrapper">
                 <div className="audio-player">
                   <audio ref={media} onTimeUpdate={initProgressBar} onEnded={onEnded} id="audio">

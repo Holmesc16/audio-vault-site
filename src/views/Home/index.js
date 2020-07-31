@@ -4,12 +4,8 @@ import Spinner from '../../components/Spinner'
 // import { useScrollTop } from '../../utils'
 // import {debounce} from 'lodash'
 import AudioCard from '../../components/AudioCard'
-import { AuthContext } from '../../App'
 
-const Home = React.memo(function Home(props) {
-  const { dispatch } = useContext(AuthContext)
-  console.log(dispatch)
-  
+const Home = React.memo(function Home(props) {  
   let currentIndex = 0
   console.log()
   return (

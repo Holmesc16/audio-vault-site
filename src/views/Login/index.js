@@ -1,9 +1,7 @@
 import React, { useState, useContext } from "react";
-import { AuthContext } from "../../App";
 import { StyledLogin } from './styles'
 
 export const Login = () => {
-  const { dispatch } = useContext(AuthContext)
 
   const initState = {
     email: '',
@@ -23,43 +21,91 @@ export const Login = () => {
   return (
   <StyledLogin>
   <div className="login-container">
-  <div className="card">
-    <div className="container">
-      <form>
-        <h1>P1 Login</h1>
-  
-    <label htmlFor="email">
-          Email Address
-          <input
-            type="text"
-            value={userData.email}
-            onChange={handleInputChange}
-            name="email"
-            id="email"
-          />
-        </label>
-  
-    <label htmlFor="password">
-          Password
-          <input
-            type="password"
-            name="password"
-            value={userData.password}
-            onChange={handleInputChange}
-            id="password"
-          />
-        </label>
-    {userData.errMessage && (
-      <span className="form-error">{userData.errMessage}</span>
-    )}
+    <div className="card login">
+      <div className="container">
+        <form>
+          <h1>P1 Sign-in</h1>
+    
+      <label htmlFor="username">
+            Username
+            <input
+              type="text"
+              // value={userData.username}
+              onChange={handleInputChange}
+              name="username"
+              id="username"
+            />
+          </label>
+    
+      <label htmlFor="password">
+            Password
+            <input
+              type="password"
+              name="password"
+              // value={userData.password}
+              onChange={handleInputChange}
+              id="password"
+            />
+          </label>
+      {userData.errMessage && (
+        <span className="form-error">{userData.errMessage}</span>
+      )}
 
-    <button disabled={userData.isSubmitting}>
-            {userData.isSubmitting ? "Loading" : "Login"}
-        </button>
-      
-    </form>
+      <button disabled={userData.isSubmitting}>
+              {userData.isSubmitting ? "Loading" : "Login"}
+          </button>
+        
+      </form>
+      </div>
     </div>
-  </div>
+  <div className="card signup">
+      <div className="container">
+        <form>
+          <h1>P1 Signup</h1>
+          <p>Sign up for the hottest <a href="http://www.theticket.com" target="_blank">Ticket</a> shit ever!</p>
+      <label htmlFor="email">
+            Email Address
+            <input
+              type="text"
+              // value={userData.email}
+              onChange={handleInputChange}
+              name="email"
+              id="email"
+            />
+          </label>
+
+          <label htmlFor="username">
+            Username
+            <input
+              type="text"
+              // value={userData.username}
+              onChange={handleInputChange}
+              name="username"
+              id="username"
+            />
+          </label>
+
+      <label htmlFor="password">
+            Password
+            <input
+              type="password"
+              name="password"
+              // value={userData.password}
+              onChange={handleInputChange}
+              id="password"
+            />
+          </label>
+      {userData.errMessage && (
+        <span className="form-error">{userData.errMessage}</span>
+      )}
+
+      <button disabled={userData.isSubmitting}>
+              {userData.isSubmitting ? "Loading" : "Login"}
+          </button>
+        
+      </form>
+      </div>
+    </div>
   </div>
 </StyledLogin>
   );
