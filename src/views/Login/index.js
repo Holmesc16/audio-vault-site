@@ -1,26 +1,85 @@
 import React, { useState, useContext } from "react";
 import { StyledLogin } from './styles'
+import { withRouter } from 'react-router-dom'
+import UserContext from '../../UserContext'
+import axios from 'axios'
 
-export const Login = () => {
+export const Login = props => {
 
-  const initState = {
-    email: '',
-    userName: '',
-    password: '',
-    isSubmitting: false,
-    errMessage: null
-  }
-  const [userData, setUserData] = useState(initState)
+  const {user, setUser} = useContext(UserContext)
 
-  const handleInputChange = e => {
-    setUserData({
-      ...userData,
-      [e.target.name]: e.target.name
-    })
-  }
+  const [username, setUsername] = useState("");
+  const [emailAddress, setEmailAddress] = useState("")
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("")
+  const [showLogin, setShowLogin] = useState(true)
+  const [error, setError] = useState('')
+
+  const onChangeUsername = (e) => {
+    const username = e.target.value;
+    setUsername(username);
+  };
+
+  const onChangePassword = (e) => {
+    const password = e.target.value;
+    setPassword(password);
+  };
+
+  const onChangePasswordConfirm = (e) => {
+    const passwordConfirm = e.target.value;
+    setPasswordConfirm(passwordConfirm);
+  };
+
+  const onChangeEmailAddress = (e) => {
+    const emailAddress = e.target.value;
+    setEmailAddress(emailAddress);
+  };
+
+  const handleSignin = (e, username, password) => {
+    e.preventDefault()
+    return axios
+    .post('http://localhost:5000/signin', {
+        username,
+        password,
+      })
+      .then((response) => {
+        let {username, email, token, created_at} = response.data
+        if (token) {
+          localStorage.setItem("user", JSON.stringify(response.data));
+          setUser(() => ({username, email, token, created_at}))
+        }
+      })
+      .then(() => props.history.push('/'))
+      .catch(err => {
+        setError(() => ({err}))
+      })
+  };
+
+  const handleSignup = (e, username, emailAddress, password) => {
+    e.preventDefault()
+    return axios
+    .post('http://localhost:5000/signup', {
+        username,
+        emailAddress,
+        password,
+      })
+      .then((response) => {
+        const {username, email, token, created_at} = response.data
+        if (token) {
+          localStorage.setItem("user", JSON.stringify(response.data));
+          setUser(() => ({username, email, token, created_at}))
+        }
+      })
+      .then(() => props.history.push('/'))
+      .catch(err => {
+        setError(() => ({err}))
+      })
+  };
+
   return (
   <StyledLogin>
   <div className="login-container">
+    {showLogin ? 
     <div className="card login">
       <div className="container">
         <form>
@@ -29,11 +88,11 @@ export const Login = () => {
       <label htmlFor="username">
             Username
             <input
-              type="text"
-              // value={userData.username}
-              onChange={handleInputChange}
-              name="username"
-              id="username"
+               type="text"
+                id="username"
+                name="username"
+                value={username}
+                onChange={e => onChangeUsername(e)}
             />
           </label>
     
@@ -42,34 +101,41 @@ export const Login = () => {
             <input
               type="password"
               name="password"
-              // value={userData.password}
-              onChange={handleInputChange}
+              value={password}
+              onChange={e => onChangePassword(e)}
               id="password"
             />
           </label>
-      {userData.errMessage && (
-        <span className="form-error">{userData.errMessage}</span>
-      )}
+          <div>
+        <a
+          style={{cursor: 'pointer'}}
+          onClick={() => setShowLogin(false)} 
+        >
+          Need an account? Sign up here
+        </a>
+      </div>
 
-      <button disabled={userData.isSubmitting}>
-              {userData.isSubmitting ? "Loading" : "Login"}
+      <button
+      onClick={e => handleSignin(e, username, password)}
+      >
+        Sign in
           </button>
         
       </form>
       </div>
     </div>
+    :
   <div className="card signup">
       <div className="container">
         <form>
           <h1>P1 Signup</h1>
-          <p>Sign up for the hottest <a href="http://www.theticket.com" target="_blank">Ticket</a> shit ever!</p>
       <label htmlFor="email">
             Email Address
             <input
               type="text"
-              // value={userData.email}
-              onChange={handleInputChange}
               name="email"
+              value={emailAddress}
+              onChange={e => onChangeEmailAddress(e)}
               id="email"
             />
           </label>
@@ -78,10 +144,10 @@ export const Login = () => {
             Username
             <input
               type="text"
-              // value={userData.username}
-              onChange={handleInputChange}
-              name="username"
               id="username"
+              name="username"
+              value={username}
+              onChange={e => onChangeUsername(e)}
             />
           </label>
 
@@ -90,24 +156,42 @@ export const Login = () => {
             <input
               type="password"
               name="password"
-              // value={userData.password}
-              onChange={handleInputChange}
+              value={password}
+              onChange={e => onChangePassword(e)}
               id="password"
             />
-          </label>
-      {userData.errMessage && (
+      </label>
+      <label htmlFor="password-confirm">
+            Confirm Password
+            <input
+              type="password"
+              name="password"
+              value={passwordConfirm}
+              onChange={e => onChangePasswordConfirm(e)}
+              id="password-confirm"
+            />
+      </label>
+      <div style={{cursor: 'pointer', margin: '12px 0'}}>
+        <a
+          onClick={()=> setShowLogin(true)} 
+        >
+          Have an account? Login here
+        </a>
+      </div>
+      {/* {userData.errMessage && (
         <span className="form-error">{userData.errMessage}</span>
-      )}
+      )} */}
 
-      <button disabled={userData.isSubmitting}>
-              {userData.isSubmitting ? "Loading" : "Login"}
-          </button>
-        
+        <button
+          onClick={e => handleSignup(e, username, emailAddress, password)}
+        >
+              Signup
+        </button>
       </form>
       </div>
-    </div>
+    </div>}
   </div>
 </StyledLogin>
   );
 };
-export default Login;
+export default withRouter(Login);

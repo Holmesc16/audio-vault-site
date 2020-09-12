@@ -10,20 +10,14 @@ import UserContext from "../../UserContext";
 
 const Header = props => {
   const {user, setUser} = useContext(UserContext)
-  console.log('user!', user)
-  let scrollTop = useScrollTop()
-  let Logo = document.getElementById("logo");
-  let endOfDocumentTop = 60
-  if(Logo) {
-  Logo.className = 'smallLogo'  //scrollTop > endOfDocumentTop ? 'smallLogo' :  'largeLogo'
-  }
 
   return (
   <StyledNavbar>
         <header className="header">
               <a>
                 <Link to={{pathname:'/'}}>
-                  <img id="logo" alt="logo" src="assets/icons/logo.png" width="330"/>
+                  <img id="logo" className='smallLogo'
+                   alt="logo" src="assets/icons/logo.png" width="330"/>
                 </Link>
               </a>
               <input className="menu-btn" type="checkbox" id="menu-btn" />
@@ -31,11 +25,11 @@ const Header = props => {
               <ul className="menu">
                   <li><SearchBar /></li>
                   <li>
-                        <a href="/about">ABOUT</a>
+                        <a href="/about" className="border">About</a>
                   </li>
                   {/* <li><a>ARCHIVES</a></li> */}
                   <li>
-                    {user ? <Button>{user}</Button>
+                    {user ? <Button className="username">{user.username}</Button>
                   : <Link to={{pathname: '/login'}}>
                       <Button className="sign-in" primary>Sign In</Button>
                     </Link>

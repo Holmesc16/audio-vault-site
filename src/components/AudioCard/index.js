@@ -1,8 +1,10 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import StyledCard from './styles'
 import { Button, Icon, Item, Label, Loader } from 'semantic-ui-react'
 import { Link, Redirect } from 'react-router-dom'
+import FavoriteButton from '../widgets/FavoriteButton'
 import axios from 'axios'
+import UserContext from '../../UserContext'
 
 const cleanTagName = tag => tag.replace('https: www.theunticket.com ', '').replace('tag', '').trim()
 
@@ -11,6 +13,7 @@ const AudioCard = React.memo(function AudioCard(props) {
     const [currentChunk, setCurrentChunk] = useState(props.audio[index]) //props.index
     const [taggedAudio, setTaggedAudio] = useState([])
     const [tag, setTag] = useState(null)
+    const {user, setUser} = useContext(UserContext)
 
     useEffect(() => {
         const infiniteScroll = () => {
@@ -53,8 +56,9 @@ const AudioCard = React.memo(function AudioCard(props) {
                                 .split(',')
                                 .map(tag => tag.length ? <Label key={tag} className="audio tag" onClick={e => handleTagClick(e)}>{cleanTagName(tag)}</Label> : '')}
                                 </Item.Extra>
+                                    <FavoriteButton user={user} title={item.audio_title} date={item.audio_date} s3key={item.s3_key} />
                                     <Link to={{pathname:`/file/${item.s3_key}`, state: { title: item.audio_title, tags: item.audio_tags, date: item.audio_date, key:item.s3_key } }}>
-                                        <Button floated='right' className="">
+                                        <Button floated='right' className="play-button">
                                             Listen&nbsp;
                                             <Icon name='play right small'/>
                                         </Button>

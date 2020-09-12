@@ -3,9 +3,12 @@ import fontStyle from '../../ui/AppStyles'
 
  const StyledNavbar = styled.nav`
  @import url('https://fonts.googleapis.com/css?family=Covered+By+Your+Grace&display=swap');
-*:focus {
-    outline:none;
-}
+ * {
+  ${fontStyle};
+ } 
+ *:focus {
+      outline:none;
+  }
   
   a {
     color: #000;
@@ -37,7 +40,6 @@ import fontStyle from '../../ui/AppStyles'
     background-color: #fff;
   }
   ul.menu > li {
-    ${fontStyle};
     color:black;
     text-shadow:none;
   }
@@ -45,8 +47,36 @@ import fontStyle from '../../ui/AppStyles'
     display: block;
     padding: 20px 20px;
     text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
-  
+  .border {
+    position:relative;
+    &:hover::after {
+      content:'';
+      position: absolute;
+      width: 50%;
+      height: 0;    
+      left:30px;
+      bottom:12px;
+      border-bottom: 6px solid rgba(36, 30, 227, 0.9); 
+       transition: width .3s;
+    }
+  }
+  button.sign-in {
+    font-weight: 600 !important;
+  }
+  button.ui.button.username {
+    margin-right: 20px;
+    margin-top: 12px;
+    background: rgba(36, 30, 227, 0.9);
+    color: white;
+    letter-spacing: .8px;
+    font-weight: 600;
+}
   .header .logo {
     display: block;
     float: left;
@@ -173,11 +203,10 @@ import fontStyle from '../../ui/AppStyles'
     text-decoration: none;
     color: black;
     font-size: 1.4rem;
-    // text-shadow: -1px -1px #ab0f00, 1px 1px #001a68;
     letter-spacing: 1.5px;
     margin-right: 12px;
         &:hover {
-          text-shadow:2px 2px #eee;
+          text-decoration:underline;
           cursor:pointer;
           transition:font-size .2s ease-in-out;
         } &:focus {

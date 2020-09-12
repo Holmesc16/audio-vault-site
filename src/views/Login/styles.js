@@ -46,9 +46,12 @@ h1 {
   justify-content: space-around;
   align-self: center;
 }
+input[type="text"] {
+  font-family: 'Avenir Next' !important;
+}
 input[type="text"], input[type="password"]{
-  padding-left: 1px;
-  padding-right: 1px;
+  padding-left: 12px;
+  padding-right: 12px;
   height: 40px;
   border-radius: 5px;
   border: .5px solid rgb(143, 143, 143);
@@ -59,16 +62,20 @@ label{
   flex-direction: column;
 }
 .login-container button{
-  height: 40px;
-  font-weight: bold;
-  font-size: 15px;
-  background-color: #F42B4B;
-  color: rgb(255, 255, 255);
+    height: 40px;
+    font-weight: 600;
+    border: none;
+    font-size: 15px;
+    font-family: 'Avenir Next';
+    background-color: #AB1000;
+    color: rgb(255,255,255);
+
+      &:hover, &:focus {
+          cursor:pointer;
+          background-color:#FF0111;
+      }
 }
-.login-container button:hover{
-  background-color: rgb(151, 25, 46);
-  cursor: pointer;
-}
+
 .login-container button:focus{
   outline: none !important;
 }

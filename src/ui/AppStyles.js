@@ -20,8 +20,7 @@ font-style: normal;
 font-weight: 400;
 color: white;
 font-size:${props => props.size || '1.1rem'};
-text-transform:uppercase;
-text-shadow: 1px 1px 0px #a81414;
+// text-transform:uppercase;
 `
 export const GlobalStyle = createGlobalStyle`
 @font-face {
