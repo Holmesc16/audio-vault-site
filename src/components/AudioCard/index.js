@@ -2,18 +2,28 @@ import React, {useState, useEffect, useContext} from 'react'
 import StyledCard from './styles'
 import { Button, Icon, Item, Label, Loader } from 'semantic-ui-react'
 import { Link, Redirect } from 'react-router-dom'
-import FavoriteButton from '../widgets/FavoriteButton'
 import axios from 'axios'
 import UserContext from '../../UserContext'
+import { withRouter } from 'react-router-dom'
 
 const cleanTagName = tag => tag.replace('https: www.theunticket.com ', '').replace('tag', '').trim()
 
-const AudioCard = React.memo(function AudioCard(props) {
+const AudioCard = withRouter((props) => {
     const [index, setIndex] = useState(0)
     const [currentChunk, setCurrentChunk] = useState(props.audio[index]) //props.index
     const [taggedAudio, setTaggedAudio] = useState([])
     const [tag, setTag] = useState(null)
     const {user, setUser} = useContext(UserContext)
+    const [userFavorites, setUserFavorites] = useState(user?.favorites ? JSON.parse(user.favorites) : [])
+    console.log({faves: userFavorites})
+
+    const favoritesFromLocalStorage = JSON.parse(localStorage.getItem('favorites') || 0);
+
+    useEffect(() => {
+        if(favoritesFromLocalStorage !== 0) {
+            setUserFavorites([...favoritesFromLocalStorage])
+        }
+    }, [])
 
     useEffect(() => {
         const infiniteScroll = () => {
@@ -24,7 +34,6 @@ const AudioCard = React.memo(function AudioCard(props) {
                     let newIndex = index + 1
                     setIndex(newIndex)
                     setCurrentChunk(() => currentChunk.concat(props.audio[index]))
-                    console.log('currentChunk',currentChunk)
                 }
         }
         window.addEventListener('scroll', infiniteScroll)
@@ -39,6 +48,39 @@ const AudioCard = React.memo(function AudioCard(props) {
             .then(tags => setTaggedAudio(tags))
             .then(() => console.log(taggedAudio))
     }
+
+    const toggleFavorite = (e, {index, name}) => {
+        e.preventDefault()
+        if(!user) {
+            props.history.push('/login', {user})
+        } else {
+        let array = userFavorites;
+        let addArray = true;
+        array.map((item, $i) => {
+            debugger;
+            if(item.name === name) {
+                array.splice($i, 1)
+                addArray = false
+            }
+        })
+        if(addArray) array.push({name, index})
+        setUserFavorites([...array])
+        console.log({userFavorites})
+        localStorage.setItem('favorites', JSON.stringify(userFavorites))
+        axios.post(`http://localhost:5000/favorites/put`, {
+            user,
+            userFavorites: JSON.stringify(userFavorites)
+        })
+            .then(response => console.log({faves: response.data}))
+        let storage = localStorage.getItem(`favorite_${name || 0}`)
+        if(storage == null) {
+            localStorage.setItem(`favorite_${name}`, JSON.stringify({name, index}))
+        } else {
+            localStorage.removeItem(`favorite_${name}`)
+        }
+    }
+    }
+
    return (
         <StyledCard>
             <div>
@@ -56,7 +98,10 @@ const AudioCard = React.memo(function AudioCard(props) {
                                 .split(',')
                                 .map(tag => tag.length ? <Label key={tag} className="audio tag" onClick={e => handleTagClick(e)}>{cleanTagName(tag)}</Label> : '')}
                                 </Item.Extra>
-                                    <FavoriteButton user={user} title={item.audio_title} date={item.audio_date} s3key={item.s3_key} />
+                                    <Button onClick={e => toggleFavorite(e, {index, name: item.s3_key})} floated='right' className="favorite" style={{backgroundColor: `${userFavorites.filter(obj => obj.name === item.s3_key).length ? '#ffcc22' : '#fff' }`, paddingRight: '12px', border: `1px solid ${userFavorites.filter(obj => obj.name === item.s3_key).length ? '#fff' : '#999'}`}}>
+                                        <Icon name={userFavorites.filter(obj => obj.name === item.s3_key).length ? 'heart' : 'heart outline'} className="heart" center="true" color={userFavorites.filter(obj => obj.name === item.s3_key).length ? 'white' : 'red'}/>
+                                    </Button>
+                                    
                                     <Link to={{pathname:`/file/${item.s3_key}`, state: { title: item.audio_title, tags: item.audio_tags, date: item.audio_date, key:item.s3_key } }}>
                                         <Button floated='right' className="play-button">
                                             Listen&nbsp;

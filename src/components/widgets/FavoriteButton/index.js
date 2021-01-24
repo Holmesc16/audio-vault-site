@@ -7,25 +7,47 @@ const FavoriteButton = withRouter((props) => {
     const [isFavorited, setIsFavorited] = useState(false)
     const [userFavorites, setUserFavorites] = useState([])
     const {file, user, title, date, s3key} = props
+    
+    const addFav = (props) => {
+        let array = userFavorites;
+        let addArray = true;
+        array.map((item, key) => {
+            if(item === props.i) {
+                array.splice(key, 1)
+                addArray = false
+            }
+        })
+        if(addArray) array.push(props.i)
+        setUserFavorites([...array])
+        localStorage.setItem('favorites', JSON.stringify(userFavorites))
+        let storage = localStorage.getItem(`favorite_${props.i || 0}`)
+        if(storage == null) {
+            localStorage.setItem(`favorite_${props.i}`, JSON.stringify(props.items))
+        } else {
+            localStorage.removeItem(`favorite_${props.i}`)
+        }
+    }
 
     const addToFavorites = (e, title, user, date, key) => {
+        debugger;
         e.preventDefault()
         if(!user) {
             props.history.push('/login', {title, user, date, key})
+        } else {
+            setIsFavorited(!isFavorited)
+            axios
+            .post('http://localhost:5000/favorites/update/', {
+                file,
+                user: user.username,
+                title,
+                userFavorites
+            })
+            .then(response => {
+                return response.data
+            })
+            .then(favorites => setUserFavorites(prev => [...prev, favorites]))
+            .then(() => console.log(userFavorites))
         }
-        setIsFavorited(!isFavorited)
-        axios
-        .post('http://localhost:5000/favorites/update/', {
-            file,
-            user: user.username,
-            title,
-            userFavorites
-        })
-        .then(response => {
-            return response.data
-        })
-        .then(favorites => setUserFavorites(prev => [...prev, favorites]))
-        .then(() => console.log(userFavorites))
     }
 
     useEffect(() => {
@@ -36,7 +58,7 @@ const FavoriteButton = withRouter((props) => {
                 // console.log('favorites! ',response)
                 const { favorites } = response.data
                 if(favorites !== undefined && favorites > 0) {
-                    setUserFavorites(favorites)
+                    setUserFavorites(prev => [...prev, favorites])
                 }
             })
         }}

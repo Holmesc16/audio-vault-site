@@ -14,6 +14,7 @@ export const Login = props => {
   const [passwordConfirm, setPasswordConfirm] = useState("")
   const [showLogin, setShowLogin] = useState(true)
   const [error, setError] = useState('')
+  const [favorites, setFavorites] = useState([])
 
   const onChangeUsername = (e) => {
     const username = e.target.value;
@@ -43,10 +44,10 @@ export const Login = props => {
         password,
       })
       .then((response) => {
-        let {username, email, token, created_at} = response.data
+        let {username, email, token, created_at, favorites} = response.data
         if (token) {
           localStorage.setItem("user", JSON.stringify(response.data));
-          setUser(() => ({username, email, token, created_at}))
+          setUser(() => ({username, email, token, created_at, favorites}))
         }
       })
       .then(() => props.history.push('/'))

@@ -4,7 +4,8 @@ const UserContext = createContext({
     username: '',
     email: '',
     token: '',
-    created_at: ''
+    created_at: '',
+    favorites: []
 })
 
 export default UserContext
