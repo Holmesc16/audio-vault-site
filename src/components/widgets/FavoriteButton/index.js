@@ -46,7 +46,6 @@ const FavoriteButton = withRouter((props) => {
                 return response.data
             })
             .then(favorites => setUserFavorites(prev => [...prev, favorites]))
-            .then(() => console.log(userFavorites))
         }
     }
 
@@ -55,7 +54,6 @@ const FavoriteButton = withRouter((props) => {
             if(user) {
             axios.get(`http://localhost:5000/favorites/${user}`)
             .then(response => {
-                // console.log('favorites! ',response)
                 const { favorites } = response.data
                 if(favorites !== undefined && favorites > 0) {
                     setUserFavorites(prev => [...prev, favorites])

@@ -22,7 +22,6 @@ const Tags = props => {
         axios.get(`http://localhost:5000/tags/${tagName}`)
             .then(response => response.data)
             .then(tags => setTaggedAudio(tags))
-            .then(() => console.log(taggedAudio))
     }
     return (
         <StyledWrapper>

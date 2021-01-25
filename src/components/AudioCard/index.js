@@ -15,7 +15,6 @@ const AudioCard = withRouter((props) => {
     const [tag, setTag] = useState(null)
     const {user, setUser} = useContext(UserContext)
     const [userFavorites, setUserFavorites] = useState(user?.favorites ? JSON.parse(user.favorites) : [])
-    console.log({faves: userFavorites})
 
     const favoritesFromLocalStorage = JSON.parse(localStorage.getItem('favorites') || 0);
 
@@ -46,7 +45,6 @@ const AudioCard = withRouter((props) => {
         axios.get(`http://localhost:5000/tags/${tagName}`)
             .then(response => response.data)
             .then(tags => setTaggedAudio(tags))
-            .then(() => console.log(taggedAudio))
     }
 
     const toggleFavorite = (e, {index, name}) => {
@@ -65,13 +63,11 @@ const AudioCard = withRouter((props) => {
         })
         if(addArray) array.push({name, index})
         setUserFavorites([...array])
-        console.log({userFavorites})
         localStorage.setItem('favorites', JSON.stringify(userFavorites))
         axios.post(`http://localhost:5000/favorites/put`, {
             user,
             userFavorites: JSON.stringify(userFavorites)
         })
-            .then(response => console.log({faves: response.data}))
         let storage = localStorage.getItem(`favorite_${name || 0}`)
         if(storage == null) {
             localStorage.setItem(`favorite_${name}`, JSON.stringify({name, index}))

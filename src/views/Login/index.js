@@ -14,7 +14,6 @@ export const Login = props => {
   const [passwordConfirm, setPasswordConfirm] = useState("")
   const [showLogin, setShowLogin] = useState(true)
   const [error, setError] = useState('')
-  const [favorites, setFavorites] = useState([])
 
   const onChangeUsername = (e) => {
     const username = e.target.value;

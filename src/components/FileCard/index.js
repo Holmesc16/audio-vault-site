@@ -9,8 +9,7 @@ const FileCard = props => {
  
  const [src, setSrc] = useState(null)
  const [isPlaying, setIsPlaying] = useState(false)
- const { title, date, tags, key } =props.location.state
- console.log()
+ const { title, date, tags, key } = props.location.state
  let { response, loading } = useFetch(`http://localhost:5000/file/${key}`)
  
   useEffect(() => {

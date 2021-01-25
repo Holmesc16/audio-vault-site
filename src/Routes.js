@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import App from './App'
 import Header from './components/Header'
@@ -13,6 +13,14 @@ import About from './views/About'
 const Routes = () => {
   const [user, setUser] = useState(null)
   const userProviderValue = useMemo(() => ({user, setUser}), [user, setUser])
+  
+  useEffect(() => {
+    let existingUser = localStorage.getItem('user')
+    if(existingUser !== null) {
+      const {username, email, token, created_at, favorites} = JSON.parse(existingUser)
+      setUser(() => ({username, email, token, created_at, favorites}))
+    }
+  }, [])
 
   return (
     <Router>

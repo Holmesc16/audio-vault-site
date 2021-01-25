@@ -22,9 +22,6 @@ export default class SearchBar extends Component {
     if(e.key === 'Enter') {
       axios.get(`http://localhost:5000/search?keyword=${searchParam}`)
       .then(response => this.setState({results: response.data, searchValue: searchParam}))
-      .then(() => {
-        console.log(this.location)
-      })
     }
   }
 
@@ -52,46 +49,3 @@ export default class SearchBar extends Component {
     )
   }
 }
-// const SearchBar = props => {
-//   const [searchValue, setSearchValue] = useState('');
-//   const [results, setResults] = useState([])
-//   const inputRef = useRef(null)
-
-//   const handleKeyPress = e => setSearchValue(e.target.value)
-
-//   const handleSubmit = e => {
-//       // e.preventDefault();
-//       axios.get(`http://localhost:5000/search?keyword=${searchValue}`)
-//       .then(response => {
-//         return new Promise((resolve, reject) => {
-//           setResults(response.data)
-//           resolve(results)
-//           reject(err => console.log(`promise failed: ${err}`))
-//         })
-//         .then(results => {
-//           console.log(results)
-//           return (
-//             <Redirect to={{
-//               pathname: '/search',
-//               state: results
-//             }}/>
-//             )})
-//         })
-//       .catch(err => console.log(`there's something wrong: ${err}`))
-//   }
- 
-//   return (
-//     <StyledSearchBar>
-//         <form onSubmit={e => handleSubmit(e)}>
-//           <Input icon='search' placeholder='Search...' 
-//             type="text"
-//             value={searchValue}
-//             ref={inputRef}
-//             onChange={e => handleKeyPress(e)}
-//           />
-//         </form>
-//      </StyledSearchBar>
-//   );
-// }
-
-// export default SearchBar
