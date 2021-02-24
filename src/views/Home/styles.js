@@ -6,7 +6,7 @@ export const StyledWrapper = styled.div`
   }
   min-height: 100%;
     position: absolute;
-    top: 349px;
+    top: 200px;
     padding: 30px 50px;
     width:100%;
     margin-bottom: 75px;

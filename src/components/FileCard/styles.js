@@ -7,7 +7,7 @@ flex-direction: row;
 
 export const StyledAudioPlayer = styled.div`
 display:inline-block;
-font-family: 'Avenir Next', Helvetica
+font-family: 'Avenir Next', Helvetica;
 .audio-player {
     width: 470px;
     padding: 35px 20px;
@@ -16,6 +16,7 @@ font-family: 'Avenir Next', Helvetica
     border: 2px solid #0435cd;
     border-radius: 50px;
     box-shadow: 14px 9px 4px #999;
+    height: 155px;
   
     .player-controls {
       position: relative;
@@ -72,6 +73,19 @@ font-family: 'Avenir Next', Helvetica
           border-right: 1px solid #000;
         }
       }
+    }
+    .interactive-controls {
+    margin: 12px 14px 0px 0px;
+    }
+    img.clip-img {
+      width: 45px;
+      cursor: pointer;
+      margin-left: 10px;
+      padding-left: 8px;
+      border: .5px solid #ddd;
+      box-shadow: 3px 2px 5px #eee, -2px -3px 6px #eee;
+      border-radius: 16px;
+      margin-top: 12px;
     }
   }
 `

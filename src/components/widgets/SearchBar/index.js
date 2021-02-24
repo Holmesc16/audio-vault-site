@@ -16,7 +16,6 @@ export default class SearchBar extends Component {
   }
 
   handleKeyPress = e => {
-    // debugger;
     let key = e.key
     let searchParam = e.target.value
     if(e.key === 'Enter') {

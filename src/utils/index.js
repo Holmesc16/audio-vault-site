@@ -116,18 +116,75 @@ export const removeSuperfluousDate = title => {
   return title.trim() 
 }
 
-export const useDetermineContext = () => {
-  let [context, setContext] = useState(null)
-  
-  if (!window.AudioContext) {
-      if (!window.webkitAudioContext) {
-          alert("Your browser does not support any AudioContext and cannot play back this audio.");
-          return;
+export const initialPeaksOptions = {
+  containers: {
+    zoomview: document.getElementById('zoomview-container'),
+    overview: document.getElementById('overview-container'),
+    mediaElement: document.querySelector('audio#peaks-audio'),
+    // dataUri: {
+    //   arraybuffer: null,
+    // },
+    withCredentials: false,
+    webAudio: {
+      audioContext: new AudioContext(),
+      audioBuffer: null, // provide an AudioBuffer from s3 with the decoded audio >> NOTE: if this is used, AudioContext prop is not needed
+      multiChannel: false
+    },
+    logger: console.error.bind(console), // async log func
+    emitCueEvents: false, // if true, emit cue events on Peaks instance
+    height: 200,
+    zoomLevels: [512, 1024, 2048, 4096],
+    keyboard: false, // binds keyboard controls
+    nudgeIncrement: 0.01, // nudge increment controls with left/right arrows
+    segmentStartMarkerColor: '#ffcc22', // segment start marker handles
+    segmentEndMarkerColor: '#ffcc22',
+    zoomWaveformColor: 'rgba(25, 005, 208, 1)', //color for zoomable waveform 
+    overviewWavefromColor: 'rgba(0,0,0,0.2)',
+    overviewHighlightColor: '#999',
+    overviewHighlightOffset: 11, // default # of pixels from top & bottom of canvas that overviewHighlight takes up
+    segmentColor: 'rgba(255, 1, 9, 1)', // color for segments on waveform
+    playheadColor: 'rgba(0, 0, 0, 1)',
+    playheadTextColor: '#aaa',
+    timeLabelPrecision: 2, // precision of time label of play head and point/segment markers
+    showPlayheadTime: false, // (zoom view only) show current time next to play head
+    pointMarkerColor: '#ff0990',
+    axisGridlineColor: '#ccff00', // color of axis gridlines
+    axisLabelColor: '#000', // color of axis labels
+    randomizeSegmentColor: true, // overrides @segmentColor
+    fontFamily: 'Avenir Next, Helvetica',
+    fontSize: 11, // font size for axis labels, playhead, and point / segment markers
+    fontStyle: 'normal', // style, matches format for size
+    segments: [ // array of initial segment objects with StartTime and EndTime in secs and a boolean for editable
+      {
+        startTime: 120,
+        endTime: 140,
+        editable: true,
+        color: '#0099ff',
+        labelText: 'Start Clip'
+      },
+      { 
+        startTime: 220,
+        endTime: 240,
+        editable: true,
+        color: '#0099ff',
+        labelText: 'End Clip'
       }
-          window.AudioContext = window.webkitAudioContext;
+    ],
+    points: [
+      {
+        time: 150,
+        editable: true,
+        color: '#00ff00',
+        labelText: 'Audio Point'
+      },
+      {
+        time: 160,
+        editable: true,
+        color: '#00ff00',
+        labelText: '2nd Audio Point'
       }
-      let c = new AudioContext();
-      setContext(c)
-      return context
+    ]
   }
-export default {cleanTitleName, cleanDate, readableName, removeSuperfluousDate}
+
+}
+export default {cleanTitleName, cleanDate, readableName, removeSuperfluousDate, initialPeaksOptions}

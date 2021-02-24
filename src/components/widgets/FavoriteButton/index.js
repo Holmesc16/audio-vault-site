@@ -29,7 +29,6 @@ const FavoriteButton = withRouter((props) => {
     }
 
     const addToFavorites = (e, title, user, date, key) => {
-        debugger;
         e.preventDefault()
         if(!user) {
             props.history.push('/login', {title, user, date, key})
