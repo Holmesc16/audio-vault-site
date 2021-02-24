@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { StyledWrapper } from '../../views/Home/styles'
 import { StyledAudioPlayer } from './styles'
 import { Container, Item, Label, Popup } from 'semantic-ui-react'
@@ -7,60 +7,53 @@ import Spinner from '../../components/Spinner'
 import Peaks from 'peaks.js'
 
 const FileCard = props => {
- const [peaksOptions, setPeaksOptions] = useState(initialPeaksOptions)
- const [src, setSrc] = useState(null)
+ const [peaksOptions, setPeaksOptions] = useState(null)
  const [isPlaying, setIsPlaying] = useState(false)
+ const [currentTimeValue, setCurrentTimeValue] = useState(0)
+ const [percentPlayed, setPercentPlayed] = useState(0)
  const { title, date, tags, key } = props.location.state
  let { response, loading } = useFetch(`http://localhost:5000/file/${key}`)
  
- const updatePeaks = () => {
-   Peaks.init(peaksOptions, (err, peaks) => {
-     if(err) {
-      console.error(`failed to init Peaks instance: ${err.message}`)
-      return
-     }
-     console.log(peaks.player.getCurrentTime())
-   })
-   console.log(peaksOptions)
- }
+ const media = useRef(null);
+ const seekObj = React.createRef();
+ const overviewContainer = useRef(null);
+ const mediaElement = useRef(null);
+ const zoomViewContainer = useRef(null);
 
- useEffect(() => {
-  return async function cleanup() {
-    if(response !== null && response !== 'undefined') {
-      setSrc(await response.url)
-    }
-  }
-})
+  useEffect(() => {
+    if (response)
+      setPeaksOptions({
+        ...initialPeaksOptions,
+        dataUri: {
+          arraybuffer: response.buffer.data
+        },
+        mediaUrl: response.url,
+        containers: {
+          zoomview: zoomViewContainer.current,
+          overview: overviewContainer.current,
+        },
+        mediaElement: mediaElement.current
+      });
+  }, [response]);
 
-useEffect(() => {
-  return async function cleanup() {
-    debugger;
-    if(response !== null && response !== 'undefined') {
-      return new Promise((resolve, reject) => {
-        setPeaksOptions(prevState => ({...prevState, dataUri: response.buffer.data}))
-        resolve(peaksOptions)
-        reject(err => console.log(`error in Peaks hook: ${err}`))
-      })
-      .then(() => updatePeaks())
+  useEffect(() => {
+    if (peaksOptions) {
+      Peaks.init(peaksOptions, (err, peaks) => {
+          if (err) console.error(err)
+          else console.log(peaks)
+        })
     }
-    console.log(peaksOptions)
-  }
-}, [response])
+  }, [peaksOptions])
 
  useEffect(() =>{
-    const scrollTop = () => window.scrollTo(0,0)
-    scrollTop()
-    return scrollTop()
+    window.scrollTo(0,0)
   })
 
-
- const media = React.createRef()
- const percentage = React.createRef();
- const seekObj = React.createRef();
- const currentTime = React.createRef();
-
  const togglePlay = () => {
-    let audioIsPlaying = media.current.currentTime > 0 && !media.current.paused && media.current.readyState > 2;
+    let audioIsPlaying = 
+      media.current.currentTime > 0 
+      && !media.current.paused 
+      && media.current.readyState > 2;
 
     if (!audioIsPlaying) {
       media.current.play();
@@ -70,11 +63,6 @@ useEffect(() => {
 
     setIsPlaying(!isPlaying)
 };
-
-const calculatePercentPlayed = () => {
-  let percentPlayed = (media.current.currentTime / media.current.duration).toFixed(2) * 100;
-  percentage.current.style.width = `${percentPlayed}%`;
-}
 
 const calculateCurrentValue = currentTime => {
   const currentMinute = parseInt(currentTime / 60) % 60;
@@ -87,23 +75,21 @@ const calculateCurrentValue = currentTime => {
   return currentTimeFormatted;
 }
 
-const initProgressBar = () => {
-  const currentTimeValue = calculateCurrentValue(media.current.currentTime);
-
   function seek(e) {
-    const percent = e.offsetX / seekObj.current.offsetWidth;
+    const percent = e.offsetX / e.target.offsetWidth;
     media.current.currentTime = percent * media.current.duration;
   }
-  //media.current.innerText = currentTimeValue
-  currentTime.current.innerHTML= currentTimeValue
-  seekObj.current.addEventListener('click', seek);
-  calculatePercentPlayed();
+
+const handleTimeUpdate = (event) => {
+  setCurrentTimeValue(calculateCurrentValue(event.target.currentTime))
+  setPercentPlayed(
+    (media.current.currentTime / media.current.duration).toFixed(2) * 100
+  );
 }
 
 const onEnded = () => {
-  percentage.current.style.width = 0;
-  currentTime.current.innerHTML = '00:00';
-
+  setPercentPlayed(0)
+  setCurrentTimeValue('00:00')
   setIsPlaying(false)
 }
 
@@ -116,19 +102,19 @@ const onEnded = () => {
               <h1>{title}</h1>
               <StyledAudioPlayer className="player-wrapper">
                 <div className="audio-player">
-                  <audio ref={media} onTimeUpdate={initProgressBar} onEnded={onEnded} id="audio">
-                    <source src={src} type="audio/mp3" />
+                  <audio ref={media} onTimeUpdate={handleTimeUpdate} onEnded={onEnded} id="audio">
+                    <source src={response && response.url} type="audio/mp3" />
                   </audio>
                   <div className="player-controls">
                     <div id="radioIcon"></div>
                     <button onClick={togglePlay} className={isPlaying === false ? 'play' : 'pause'} id="playAudio"></button>
                     <div id="seekObjContainer">
-                      <div ref={seekObj} id="seekObj">
-                        <div id="percentage" ref={percentage}></div>
+                      <div onClick={seek} id="seekObj">
+                        <div id="percentage" style={{width: `${percentPlayed}%`}}></div>
                       </div>
                     </div>
 
-                    <p><small id="currentTime" ref={currentTime}>00:00</small></p>
+                    <p><small id="currentTime">{currentTimeValue}</small></p>
 
                   </div>
                   <div className="interactive-controls">
@@ -155,9 +141,9 @@ const onEnded = () => {
               </Item.Extra>
           </Item.Content>
           <Container>
-            <div id="overview-container"></div>
-              <audio src={src} id="peaks-audio"></audio>
-              <div id="zoomview-container"></div>
+            <div ref={overviewContainer} id="overview-container"></div>
+              <audio ref={mediaElement} src={response && response.url} id="peaks-audio"></audio>
+            <div ref={zoomViewContainer} id="zoomview-container"></div>
           </Container>
         </Item>
       }
