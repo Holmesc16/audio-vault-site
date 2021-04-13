@@ -6,7 +6,7 @@
     "@mohayonao/web-audio-api-shim": "^0.3.0",
     "arraybuffer-to-audiobuffer": "0.0.5",
     "aws-sdk": "^2.585.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "faker": "^4.1.0",
     "konva": "^7.2.5",
