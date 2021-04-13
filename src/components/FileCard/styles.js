@@ -89,3 +89,34 @@ font-family: 'Avenir Next', Helvetica;
     }
   }
 `
+
+export const StyledSuggestionContainer = styled.div`
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-auto-flow: column;
+    grid-gap: 3em;
+
+    > .ui.card {
+        display: grid;
+        height: 100%;
+        align-items: flex-start;
+
+        .header, .description, .date {
+          font-family: 'Avenir Next', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        &:first-child {
+          margin-top: auto !important;
+        }
+
+        &:last-child {
+          margin: 0 !important;
+        }
+    }
+`
+
+export const StyledYouMightAlsoLikeContainer = styled.div`
+  font-family: 'Avenir Next', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin-top: 10em;
+`

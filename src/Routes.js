@@ -9,6 +9,7 @@ import Tags from './components/Tags'
 import Login from './views/Login'
 import UserContext from './UserContext'
 import About from './views/About'
+import ClipCard from './components/ClipCard'
 
 const Routes = () => {
   const [user, setUser] = useState(null)
@@ -34,6 +35,7 @@ const Routes = () => {
       <Route path="/about" component={About} /> 
       <Route path="/tags/:tag" component={Tags} />
       <Route path="/file/:name" component={FileCard}/>
+      <Route path="/clip" component={ClipCard} />
       </UserContext.Provider>
     </Router>
   ) 

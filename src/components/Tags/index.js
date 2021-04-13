@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import { Redirect } from "react-router";
 import { Loader, Item, Button, Icon, Label} from 'semantic-ui-react'
@@ -16,6 +16,8 @@ const Tags = props => {
     const [taggedAudio, setTaggedAudio] = useState(props.location.state.taggedAudio)
     const [tagName, setTagName] = useState(props.location.state.tagName)
 
+    useEffect(() => window.scrollTo(0,0))
+    
     const handleTagClick = e => {
         const tagName = e.target.innerText
         setTagName(tagName)

@@ -22,14 +22,14 @@ const AudioCard = withRouter((props) => {
         if(favoritesFromLocalStorage !== 0) {
             setUserFavorites([...favoritesFromLocalStorage])
         }
-    }, [])
+    }, [user]) // NEW: add user to dep array. Is this causing the maximum depth err? 
 
     useEffect(() => {
         const infiniteScroll = () => {
                 setCurrentChunk(() => currentChunk.concat(props.audio[index]))
                 let wrapper = document.querySelector('.audio-wrapper')
                 let scrollDiff = wrapper.offsetHeight - window.scrollY
-                if(scrollDiff < 600) {
+                if(scrollDiff < 850) {
                     let newIndex = index + 1
                     setIndex(newIndex)
                     setCurrentChunk(() => currentChunk.concat(props.audio[index]))
@@ -55,7 +55,6 @@ const AudioCard = withRouter((props) => {
         let array = userFavorites;
         let addArray = true;
         array.map((item, $i) => {
-            debugger;
             if(item.name === name) {
                 array.splice($i, 1)
                 addArray = false
@@ -87,7 +86,7 @@ const AudioCard = withRouter((props) => {
                         return (
                         <Item key={index}>
                             <Item.Content>
-                                <Item.Header className="audio header">{item.audio_title}</Item.Header>
+                                <Item.Header className="audio header">{item.audio_title ? item.audio_title : 'Hmm... There\'s No Title For This'}</Item.Header>
                                 <Item.Meta className="audio date">{item.audio_date}</Item.Meta>
                                 <Item.Extra className="audio tags-container">
                                 {item.audio_tags

@@ -1,53 +1,69 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { StyledWrapper } from '../../views/Home/styles'
-import { StyledAudioPlayer } from './styles'
-import { Container, Item, Label, Popup } from 'semantic-ui-react'
+import { StyledAudioPlayer,
+         StyledClipContainer,
+         StyledSuggestionContainer,
+         StyledYouMightAlsoLikeContainer
+} from './styles'
+import { Link, Redirect } from 'react-router-dom'
+import { Container, Item, Label, Popup, Card, Button } from 'semantic-ui-react'
 import { useFetch, cleanTitleName, initialPeaksOptions } from '../../utils'
 import Spinner from '../../components/Spinner'
 import Peaks from 'peaks.js'
+import _ from 'lodash'
 
 const FileCard = props => {
  const [peaksOptions, setPeaksOptions] = useState(null)
  const [isPlaying, setIsPlaying] = useState(false)
- const [currentTimeValue, setCurrentTimeValue] = useState(0)
+ const [youMightAlsoLike, setYouMightAlsoLike] = useState([])
+ const [createClip, setCreateClip] = useState(false)
+ const [currentTimeValue, setCurrentTimeValue] = useState("00:00")
  const [percentPlayed, setPercentPlayed] = useState(0)
  const { title, date, tags, key } = props.location.state
+ const [currentChunk, setCurrentChunk] = useState(0)
  let { response, loading } = useFetch(`http://localhost:5000/file/${key}`)
  
  const media = useRef(null);
  const seekObj = React.createRef();
- const overviewContainer = useRef(null);
- const mediaElement = useRef(null);
- const zoomViewContainer = useRef(null);
+//  const overviewContainer = useRef(null);
+//  const mediaElement = useRef(null);
+//  const zoomViewContainer = useRef(null);
 
-  useEffect(() => {
-    if (response)
-      setPeaksOptions({
-        ...initialPeaksOptions,
-        dataUri: {
-          arraybuffer: response.buffer.data
-        },
-        mediaUrl: response.url,
-        containers: {
-          zoomview: zoomViewContainer.current,
-          overview: overviewContainer.current,
-        },
-        mediaElement: mediaElement.current
-      });
-  }, [response]);
-
-  useEffect(() => {
-    if (peaksOptions) {
-      Peaks.init(peaksOptions, (err, peaks) => {
-          if (err) console.error(err)
-          else console.log(peaks)
-        })
-    }
-  }, [peaksOptions])
+ useEffect(() => {
+  if(date) {
+    fetch(`http://localhost:5000/audio/similar`, {
+      method: "post",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ date }),
+    })
+    .then(response => response.json())
+    .then(similarTracks => {
+      const filteredSimilarTracks = similarTracks.reduce((acc, current) => {
+        const x = acc.find(item => item.s3_etag === current.s3_etag);
+        if (!x) {
+          return acc.concat([current]);
+        } else {
+          return acc;
+        }
+      }, []);
+      setYouMightAlsoLike(_.chunk(filteredSimilarTracks, 3))
+    })
+    return () => setYouMightAlsoLike([])
+  }
+ }, [date])
 
  useEffect(() =>{
-    window.scrollTo(0,0)
+    if(loading) window.scrollTo(0,0)
   })
+
+ const updateQueue = () => {
+  const numberOfSimilarTracks = youMightAlsoLike.length
+  currentChunk === numberOfSimilarTracks - 1 ? setCurrentChunk(0) : setCurrentChunk(currentChunk + 1)
+  console.log({after: currentChunk})
+ }
 
  const togglePlay = () => {
     let audioIsPlaying = 
@@ -119,16 +135,17 @@ const onEnded = () => {
                   </div>
                   <div className="interactive-controls">
                     <div className="clip-container">
-                    <Popup
-                          trigger={<img 
-                            className="clip-img"
-                            src="../assets/icons/clip.svg"
-                            onClick={() => console.log('clip click')}
-                          />}
-                          content="Create Audio Clip"
-                          basic
-                          position="bottom right"
-                        />
+                      <Link to={{pathname:`/clip`, state: { title, date, tags, key, response, loading } }}>
+                        <Popup
+                              trigger={<img 
+                                className="clip-img"
+                                src="../assets/icons/clip.svg"
+                              />}
+                              content="Create Audio Clip"
+                              basic
+                              position="bottom right"
+                            />
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -140,12 +157,38 @@ const onEnded = () => {
               .map(tag => tag.length ? <Label key={tag} className="audio tag">{tag}</Label> : '')}
               </Item.Extra>
           </Item.Content>
-          <Container>
-            <div ref={overviewContainer} id="overview-container"></div>
-              <audio ref={mediaElement} src={response && response.url} id="peaks-audio"></audio>
-            <div ref={zoomViewContainer} id="zoomview-container"></div>
-          </Container>
         </Item>
+      }
+      {
+        date && youMightAlsoLike.length ? 
+        <StyledYouMightAlsoLikeContainer>
+          <h3>You might also like: </h3>
+          <StyledSuggestionContainer>
+              {youMightAlsoLike[currentChunk].map(similarTrack => {
+              return (<Card>
+                <Card.Content>
+                  <Card.Header>{similarTrack.audio_title}</Card.Header>
+                  <Card.Meta>
+                    <span className='date'>{similarTrack.audio_date}</span>
+                  </Card.Meta>
+                  <Card.Description>
+                    {similarTrack.audio_tags}
+                  </Card.Description>
+                </Card.Content>
+              </Card>)
+            })}
+            <div>
+              <Button
+                disabled={currentChunk === youMightAlsoLike.length}
+                circular
+                className="button-next"
+                onClick={() => updateQueue()}
+                icon="angle right"
+              />
+            </div>
+          </StyledSuggestionContainer>
+        </StyledYouMightAlsoLikeContainer>
+        : <></>
       }
      </StyledWrapper>
    )
