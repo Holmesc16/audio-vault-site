@@ -44,6 +44,67 @@ const ClipCard = props => {
    
     const { title, date, tags, key, response, loading } = props.location.state
 
+    class CustomSegmentMarker {
+      constructor(options) {
+        // required
+        this._options = options
+      }
+      init(group) {
+        // required
+        const layer = this._options.layer
+        const height = layer.getHeight()
+
+        this._handle = new Konva.Rect({
+          x: -20,
+          y: 0,
+          width: 40,
+          height: 20,
+          fill: this._options.color
+        })
+
+        this._line = new Konva.Line({
+          points: [0.5, 0, 0.5, height], // x1, y1, x2, y2
+          strokeWidth: 1
+        })
+        
+        group.add(this._handle)
+        group.add(this._line)
+        this._handle.on('mouseenter', () => {
+          console.log({group}, this._handle, this._line)
+          const highlightColor = '#ff0000';
+          this._handle.fill(highlightColor);
+          this._line.stroke(highlightColor);
+          layer.draw();
+        });
+
+        this._handle.on('mouseleave', () => {
+          const defaultColor = this._options.color;
+          this._handle.fill(defaultColor);
+          this._line.stroke(defaultColor);
+          layer.draw();
+        });
+      }
+      fitToView() {
+        // required
+        const layer = this._options.layer;
+        const height = layer.getHeight();
+      
+        this._line.points([0.5, 0, 0.5, height]);
+      }
+      timeUpdated(startTime, endTime) {
+        // optional
+        console.log({ startTime, endTime })
+      }
+      destroy() {
+        // optional
+        console.log('Marker destroyed!')
+      }
+    }
+
+    const createSegmentMarker = options => {
+      return new CustomSegmentMarker(options)
+    }
+
     const createSegmentLabel = options => {
       if (options.view === 'overview') {
         return null;
@@ -73,7 +134,8 @@ const ClipCard = props => {
             },
             mediaElement: mediaElement.current,
             emitCueEvents: true,
-            createSegmentLabel: createSegmentLabel,
+            createSegmentLabel,
+            createSegmentMarker
           });
       }, [response]);
     
@@ -106,7 +168,24 @@ const ClipCard = props => {
         <StyledClipContainer className="clip-container">
             <h1>Create clip for <span id="styled-title">"{title}"</span></h1>
                   <h3>Audio Overview: </h3>
-                  <div ref={overviewContainer} id="overview-container"></div>
+                  <div ref={overviewContainer} id="overview-container" onDoubleClick={
+                    e => {
+                      // @TODO: add index to handler to identify which clip is being created,
+                      // then handle `CreateSegmentMarker` according to which index is being invoked (?)
+                      console.log(peaksInstance.segments)
+                      return createSegmentMarker({
+                      ...e,
+                     view: 'overview',
+                    //  segment: peaksInstance.segments[0],
+                     layer: peaksInstance.segments._segments[0],
+                     draggable: true,
+                     color: '#ffcc22',
+                     fontFamily: 'Avenir Next',
+                     fontSize: 10,
+                     fontShape: 'normal',
+                     startMarker: true,
+                    })}
+                    }></div>
                   <h3>Zoom View: </h3>
                   <div ref={zoomViewContainer} id="zoomview-container"></div>
                   <audio controls="controls" ref={mediaElement} src={response && response.url} id="peaks-audio"></audio>

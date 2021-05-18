@@ -29,7 +29,7 @@ const AudioCard = withRouter((props) => {
                 setCurrentChunk(() => currentChunk.concat(props.audio[index]))
                 let wrapper = document.querySelector('.audio-wrapper')
                 let scrollDiff = wrapper.offsetHeight - window.scrollY
-                if(scrollDiff < 850) {
+                if(scrollDiff < 1200) {
                     let newIndex = index + 1
                     setIndex(newIndex)
                     setCurrentChunk(() => currentChunk.concat(props.audio[index]))

@@ -1,7 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { StyledLogin } from './styles'
 import { withRouter } from 'react-router-dom'
 import UserContext from '../../UserContext'
+import { Form, Message } from 'semantic-ui-react'
 import axios from 'axios'
 
 export const Login = props => {
@@ -43,6 +44,7 @@ export const Login = props => {
         password,
       })
       .then((response) => {
+        // console.log({response})
         let {username, email, token, created_at, favorites} = response.data
         if (token) {
           localStorage.setItem("user", JSON.stringify(response.data));
@@ -51,7 +53,7 @@ export const Login = props => {
       })
       .then(() => props.history.push('/'))
       .catch(err => {
-        setError(() => ({err}))
+        setError(() => err)
       })
   };
 
@@ -72,9 +74,13 @@ export const Login = props => {
       })
       .then(() => props.history.push('/'))
       .catch(err => {
-        setError(() => ({err}))
+        setError(() => err)
       })
   };
+  // checking for errs
+  useEffect(() => {
+    if(error) console.log({error})
+  }, [error])
 
   return (
   <StyledLogin>
@@ -82,9 +88,13 @@ export const Login = props => {
     {showLogin ? 
     <div className="card login">
       <div className="container">
-        <form>
+        <Form error={error || false}>
           <h1>P1 Sign-in</h1>
-    
+          <Message
+            error
+            header={error?.response?.data?.message}
+            content={error?.response?.data?.message}
+          />
       <label htmlFor="username">
             Username
             <input
@@ -121,7 +131,7 @@ export const Login = props => {
         Sign in
           </button>
         
-      </form>
+      </Form>
       </div>
     </div>
     :
