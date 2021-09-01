@@ -1,11 +1,13 @@
 import React from 'react'
 import { StyledSegment } from './styles'
+import { Table, Button, Icon } from 'semantic-ui-react'
 
 const Segment = props => {
-    const { id, startTime, endTime, labelText } = props
+    console.log(props)
+    const { url, id, startTime, endTime, labelText, segmentDate, selectedTags, user, segmentDescription, removeSegment, postAudioClip } = props
     const timeFormat = time => {   
         // Hours, minutes and seconds
-        debugger;
+        // debugger;
         let hrs = ~~(time / 3600);
         let mins = ~~((time % 3600) / 60);
         let secs = ~~time % 60;
@@ -19,20 +21,42 @@ const Segment = props => {
         ret += "" + secs;
         return ret
       }
+      const handleRemoveSegment = e => {
+          return removeSegment()
+      }
     return (
-        <StyledSegment>
-            <table id={id}>
-                <tr>
-                    <td>Segment start: {timeFormat(parseInt(startTime))}</td>
-                </tr>
-                <tr>
-                    <td>Segments end: {timeFormat(parseInt(endTime))}</td>
-                </tr>
-                <tr>
-                    <td>{labelText || ''}</td>
-                </tr>
-            </table>
-        </StyledSegment>
+        <div id="segment" style={{ display: 'flex' }}>
+            <Table celled style={{ marginTop: 0, marginBottom: 0, marginRight: '12px' }}>
+                <Table.Header>
+                <Table.Row>
+                    <Table.HeaderCell>Segment name</Table.HeaderCell>
+                    <Table.HeaderCell>Start Time</Table.HeaderCell>
+                    <Table.HeaderCell>End Time</Table.HeaderCell>
+                </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                <Table.Row>
+                    <Table.Cell>
+                        {labelText}
+                    </Table.Cell>
+                    <Table.Cell>
+                        {timeFormat(startTime)}
+                    </Table.Cell>
+                    <Table.Cell>
+                        {timeFormat(endTime)}
+                    </Table.Cell>
+                </Table.Row>
+                </Table.Body>
+        </Table>
+        <Button onClick={postAudioClip(url, labelText, segmentDescription, selectedTags, segmentDate, startTime, endTime, user)} icon labelPosition="left" style={{backgroundColor: 'rgba(36,30,227,0.9)', color: '#fff', height: 'fit-content'}}>
+            <Icon name="check" />
+            Publish
+        </Button>
+        <Button onClick={e => handleRemoveSegment(e)} icon negative labelPosition='left' style={{height: 'fit-content'}}>
+            <Icon name='cancel' />
+            Cancel
+        </Button>
+      </div>
     )
 }
 

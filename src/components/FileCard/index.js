@@ -22,9 +22,11 @@ const FileCard = props => {
  const { title, date, tags, key } = props.location.state
  const [currentChunk, setCurrentChunk] = useState(0)
  let { response, loading } = useFetch(`http://localhost:5000/file/${key}`)
- 
+ if(response && response.url) console.log(response.url)
  const media = useRef(null);
  const seekObj = React.createRef();
+ const percentage = React.createRef()
+ const currentTime = React.createRef()
 //  const overviewContainer = useRef(null);
 //  const mediaElement = useRef(null);
 //  const zoomViewContainer = useRef(null);
@@ -79,6 +81,10 @@ const FileCard = props => {
 
     setIsPlaying(!isPlaying)
 };
+const calculatePercentPlayed = () => {
+  let percentPlayed = (media.current.currentTime / media.current.duration).toFixed(2) * 100;
+  percentage.current.style.width = `${percentPlayed}%`;
+}
 
 const calculateCurrentValue = currentTime => {
   const currentMinute = parseInt(currentTime / 60) % 60;
@@ -91,10 +97,18 @@ const calculateCurrentValue = currentTime => {
   return currentTimeFormatted;
 }
 
+const initProgressBar = () => {
+  const currentTimeValue = calculateCurrentValue(media.current.currentTime);
+
   function seek(e) {
-    const percent = e.offsetX / e.target.offsetWidth;
+    const percent = e.offsetX / seekObj.current.offsetWidth;
     media.current.currentTime = percent * media.current.duration;
   }
+  //media.current.innerText = currentTimeValue
+  currentTime.current.innerHTML= currentTimeValue
+  seekObj.current.addEventListener('click', seek);
+  calculatePercentPlayed();
+}
 
 const handleTimeUpdate = (event) => {
   setCurrentTimeValue(calculateCurrentValue(event.target.currentTime))
@@ -104,7 +118,7 @@ const handleTimeUpdate = (event) => {
 }
 
 const onEnded = () => {
-  setPercentPlayed(0)
+  percentage.current.style.width = 0
   setCurrentTimeValue('00:00')
   setIsPlaying(false)
 }
@@ -118,19 +132,19 @@ const onEnded = () => {
               <h1>{title}</h1>
               <StyledAudioPlayer className="player-wrapper">
                 <div className="audio-player">
-                  <audio ref={media} onTimeUpdate={handleTimeUpdate} onEnded={onEnded} id="audio">
+                  <audio ref={media} onTimeUpdate={initProgressBar} onEnded={onEnded} id="audio">
                     <source src={response && response.url} type="audio/mp3" />
                   </audio>
                   <div className="player-controls">
                     <div id="radioIcon"></div>
                     <button onClick={togglePlay} className={isPlaying === false ? 'play' : 'pause'} id="playAudio"></button>
                     <div id="seekObjContainer">
-                      <div onClick={seek} id="seekObj">
-                        <div id="percentage" style={{width: `${percentPlayed}%`}}></div>
+                      <div ref={seekObj} id="seekObj">
+                        <div id="percentage" ref={percentage}></div>
                       </div>
                     </div>
 
-                    <p><small id="currentTime">{currentTimeValue}</small></p>
+                    <p><small id="currentTime" ref={currentTime}>00:00</small></p>
 
                   </div>
                   <div className="interactive-controls">
@@ -140,6 +154,7 @@ const onEnded = () => {
                               trigger={<img 
                                 className="clip-img"
                                 src="../assets/icons/clip.svg"
+                                alt="clip"
                               />}
                               content="Create Audio Clip"
                               basic

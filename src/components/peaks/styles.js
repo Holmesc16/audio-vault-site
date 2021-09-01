@@ -4,6 +4,6 @@ export const StyledPoint = styled.tr`
 color: blue;
 `
 
-export const StyledSegment = styled.tr`
-color: red;
+export const StyledSegment = styled.div`
+    display: flex;
 `
